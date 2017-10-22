@@ -1,0 +1,54 @@
+package com.example.pradeepaa.authorization;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+/**
+ * Created by pradeepa.a on 12-10-2017.
+ */
+
+public class DatabaseHelper extends SQLiteOpenHelper {
+
+    public static final String DATABASE_NAME = "Ipaddress.db";
+    public static final String TABLE_NAME = "ipaddress_table";
+    public static final String COL_1 = "id";
+    public static final String COL_2 = "ipaddress";
+
+    public DatabaseHelper(Context context) {
+        super(context, DATABASE_NAME, null, 1);
+
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL("create table" + TABLE_NAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT, ipaddress TEXT)");
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        onCreate(db);
+    }
+
+    public boolean insertData(String ipaddress){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_2, ipaddress);
+        long result = db.insert(TABLE_NAME, null, contentValues);
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public boolean updateData(String id, String ipaddress){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_1, id);
+        contentValues.put(COL_2, ipaddress);
+        db.update(TABLE_NAME, contentValues, "id = ?", new String[] {id});
+        return true;
+    }
+}
